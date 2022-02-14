@@ -1,5 +1,6 @@
 from itertools import cycle
 from heapq import heappush,heappop
+inf = float('inf')
 
 def idijkstra(G,s):
     Q,S = [(0,s)],set()
