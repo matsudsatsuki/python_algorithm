@@ -71,3 +71,44 @@ def dfs(G,s,d,f,S=None,t=0):
         t = dfs(G,u,d,f,S,t)
     f[s] = t; t+=1
     return t
+
+#深さ優先探索に基づいたトポロジカルソート
+def dfs_topsort(G):
+    S,res = set(),[]
+    def recurse(u):
+        if u in S:
+            return
+        S.add(u)
+        for v in G[u]:
+            recurse(v)
+        res.append(u)
+    for u in G:
+        recurse(u)
+    res.reverse()
+    return res
+
+#反復深化深さ優先探索（IDDFS）
+def iddfs(G,s):
+    yielded = set()
+    def recurse(G,s,d,S=None):
+        if s not in yielded:
+            yield s
+            yielded.add(s)
+        if d == 0:
+            return
+        if S is None:
+            S = set()
+        S.add(s)
+        for u in G[s]:
+            if u in S:
+                continue
+            for v in recurse(G,u,d-1,S):
+                yield v
+    n = len(G)
+    for d in range(n):
+        if len(yielded) == n:
+            break
+        for u in recurse(G,s,d):
+            yield u
+    
+    
