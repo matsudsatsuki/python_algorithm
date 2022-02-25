@@ -1,4 +1,5 @@
 #隣接セットを使って表現したグラフの連結成分上の走査
+from collections import deque
 from tkinter.messagebox import NO
 
 
@@ -111,4 +112,35 @@ def iddfs(G,s):
         for u in recurse(G,s,d):
             yield u
     
-    
+#幅優先探索
+def bfs(G,s):
+    P,Q = {s:None},deque([s])
+    while Q:
+        u = Q.popleft()
+        for v in G[u]:
+            if v in P:
+                continue
+            P[v] = u
+            Q.append(v)
+    return P
+
+#強連結成分を見つけるKosarajuのアルゴリズム
+def tr(G):
+    GT = {}
+    for u in G:
+        GT[u] = set()
+    for u in G:
+        for v in G[u]:
+            GT[v].add(u)
+    return GT
+
+def scc(G):
+    GT = tr(G)
+    sccs,seen = [],set()
+    for u in dfs_topsort(G):
+        if u in seen:
+            continue
+        C = walk(GT,u,seen)
+        seen.update(C)
+        sccs.append(C)
+    return sccs
