@@ -1,8 +1,6 @@
 from functools import cache, wraps
 import re
 
-from sympy import topological_sort
-
 def memo(func):
     cache = {}                        #部分問題の解をキャッシュする
     @wraps(func)                      #wrapはfuncのように見せる
@@ -41,10 +39,25 @@ def rec_dag_sp(W,s,t):                         #sからtへの最短経路
     return d(s)                                #dを実際の始点ノードsに適用
 
 #DAG最短経路
+def topsort(G):
+    count = dict((u,0)for u in G)
+    for u in G:
+        for v in G[u]:
+            count[v] += 1
+    Q = [u for u in G if count[u] == 0]
+    S = []
+    while Q:
+        u = Q.pop()
+        S.append(u)
+        for v in G[u]:
+            count[v] -= 1
+            if count[v] == 0:
+                Q.append(v)
+    return S
 def dag_sp(W,s,t):                             #sからtまでの最短経路
     d = {u:float('inf')for u in W}             #距離の推定
     d[s] = 0                                   #始点ノード　
-    for u in topological_sort(W):              #トポロジカルソートの順序で
+    for u in topsort(W):              #トポロジカルソートの順序で
         if u == t:                             #既に到着済みの場合　
             continue
         for v in W[u]:                         #各出力エッジに対して
