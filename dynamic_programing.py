@@ -23,6 +23,14 @@ def fibo(n):
 n = int(input())
 print(fibo(n))
 
+@memo
+def C(n,k):#コンビネーション
+    if k == 0:
+        return 1
+    if n == 0:
+        return 0
+    return C(n-1,k-1) + C(n-1,k)
+
 #メモ化を使った再帰的DAG最短経路
 def rec_dag_sp(W,s,t):                         #sからtへの最短経路
     @memo                                      #dをメモ化
